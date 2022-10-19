@@ -10,7 +10,7 @@ addpath(genpath(project_root));
 
 ACTIVE_ENVIRONMENT = true;
 DEBUG = false;
-VIDEO = false;
+VIDEO = true;
 CENTER_VIEW_ON_SWARM = true;
 
 if DEBUG || VIDEO
@@ -44,8 +44,8 @@ end
 swarm.set_pos(p_swarm.Pos0);
 
 % Init obstacle velocity
-velocity = Adjust_Param(adj_param);
-%velocity = 12;
+%velocity = Adjust_Param(adj_param);
+velocity = 12;
 p_swarm.cylinder_vel = zeros(2, p_swarm.n_cyl); %速度大小，取＋
 for i = 1 : p_swarm.n_cyl
     if mod(i,2)
