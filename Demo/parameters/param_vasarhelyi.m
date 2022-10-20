@@ -37,5 +37,9 @@ p_swarm.p_shill = 3.55;
 % Acceleration of braking curve for walls
 p_swarm.a_shill = 3.02;    
 % Propotion of obstacle effect
-p_swarm.g_shill_base = 1.5;
-p_swarm.g_shill_range = 5;
+if ~isfield(p_swarm, 'g_shill_base')
+    p_swarm.g_shill_base = 1.5;
+end
+if ~isfield(p_swarm, 'g_shill_range')
+    p_swarm.g_shill_range = 5;
+end

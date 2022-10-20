@@ -1,0 +1,12 @@
+序号,启用视频,启用过程参量统计,启用情感机制,重复执行次数,障碍物速度,集群规模,情感传递因子,恐惧情感激发距离,斥力系数基值,斥力系数调节范围,碰撞半径,优选距离,优选速度,最大速度,最大加速度
+scenario,en_video,en_emotion,en_stat,repeat_times,v_obs,n_agents,trans_prop,fear_dist,g_shill_base,g_shill_range,r_coll,d_ref,v_ref,v_max,a_max
+1,TRUE,FALSE,TRUE,3,0.1,200,0.2,30,0.15,0.5,1,8,5,10,10
+2,TRUE,FALSE,TRUE,3,0.2,200,0.2,30,0.15,0.5,1,8,5,10,10
+3,FALSE,FALSE,TRUE,3,0.3,200,0.2,30,0.15,0.5,1,8,5,10,10
+4,FALSE,FALSE,TRUE,3,0.4,200,0.2,30,0.15,0.5,1,8,5,10,10
+5,FALSE,FALSE,TRUE,3,0.5,200,0.2,30,0.15,0.5,1,8,5,10,10
+6,FALSE,FALSE,TRUE,3,0.6,200,0.2,30,0.15,0.5,1,8,5,10,10
+7,FALSE,FALSE,TRUE,3,0.7,200,0.2,30,0.15,0.5,1,8,5,10,10
+8,FALSE,FALSE,TRUE,3,0.8,200,0.2,30,0.15,0.5,1,8,5,10,10
+9,FALSE,FALSE,TRUE,3,0.9,200,0.2,30,0.15,0.5,1,8,5,10,10
+10,FALSE,FALSE,TRUE,3,1,200,0.2,30,0.15,0.5,1,8,5,10,10

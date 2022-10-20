@@ -1,7 +1,7 @@
 classdef Swarm_Statistics
     % 集群统计量
     
-    properties (Constant = true)
+    properties
         en_distance = false;  % 平均距离
         en_velocity = false;  % 平均速度
         en_collisions = true; % 碰撞曲线和碰撞统计
@@ -13,6 +13,8 @@ classdef Swarm_Statistics
         start_edge = -120;      % 进入有效区域边界
         end_edge = 100;         % 到达目标区域边界
         reach_prop = 0.9;       % 结束时到达比例下限
+        
+        p_emotion;
     end
     
     % 初值和中间变量
@@ -44,26 +46,32 @@ classdef Swarm_Statistics
     end
     
     methods
-        function self = Swarm_Statistics(p_swarm, p_sim)
-            self.calc_dt = p_sim.dt_plot;
-            self.agent_nb = p_swarm.nb_agents;
-            self.agent_r = p_swarm.r;
-            self.start_flag = false;
-            self.end_flag = false;
-            self.agent_pos = zeros(2, self.agent_nb);
-            self.agent_vel = zeros(2, self.agent_nb);
-            self.agent_emo(1, self.agent_nb) = Emotion();
-            self.agent_neig = zeros(1, self.agent_nb);
-            self.collisions = zeros(1,2);
+        function self = Swarm_Statistics(p_swarm, p_sim, p_emotion)
+            self.p_emotion = p_emotion;
             
-            self.stat_time = zeros(1,4);        % 开始(准确)/结束(准确)/开始(统计)/统计次数(统计)
-            self.stat_distance = zeros(3,1);    % 最小/最大/平均
-            self.stat_velocity = zeros(2,1);    % 平均/方差
-            self.stat_collisions = zeros(1,2);  % 无人机之间/无人机和障碍物(总和, 不统计随时间变化关系)
-            self.stat_MSwarm = zeros(1,1);      % 每一统计时刻的序参量
-            self.stat_avrneig = zeros(1,1);     % 每一统计时刻的平均邻居数
-            self.stat_avremotion = zeros(1,1);  % 每一统计时刻的平均情感强度
-            self.stat_density = zeros(1,1);     % 每一统计时刻的集群密度
+            if ~isempty(p_swarm) && ~isempty(p_sim)
+                self.calc_dt = p_sim.dt_plot;
+                self.agent_nb = p_swarm.nb_agents;
+                self.agent_r = p_swarm.r;
+                self.start_flag = false;
+                self.end_flag = false;
+                self.agent_pos = zeros(2, self.agent_nb);
+                self.agent_vel = zeros(2, self.agent_nb);
+                for i = 1:self.agent_nb
+                    self.agent_emo(i) = Emotion(p_emotion);
+                end
+                self.agent_neig = zeros(1, self.agent_nb);
+                self.collisions = zeros(1,2);
+
+                self.stat_time = zeros(1,4);        % 开始(准确)/结束(准确)/开始(统计)/统计次数(统计)
+                self.stat_distance = zeros(3,1);    % 最小/最大/平均
+                self.stat_velocity = zeros(2,1);    % 平均/方差
+                self.stat_collisions = zeros(1,2);  % 无人机之间/无人机和障碍物(总和, 不统计随时间变化关系)
+                self.stat_MSwarm = zeros(1,1);      % 每一统计时刻的序参量
+                self.stat_avrneig = zeros(1,1);     % 每一统计时刻的平均邻居数
+                self.stat_avremotion = zeros(1,1);  % 每一统计时刻的平均情感强度
+                self.stat_density = zeros(1,1);     % 每一统计时刻的集群密度
+            end  
         end
         
         function [start_flag, end_flag] = get_timeflags(self)
@@ -178,7 +186,7 @@ classdef Swarm_Statistics
             if (mod(time, self.calc_dt) == 0) && self.start_flag
                 self.agent_vel = swarm.get_vel_ned;
                 self.agent_neig = swarm.get_nb_neig;
-                self.agent_emo = swarm.get_emotion;
+                self.agent_emo = swarm.get_emotion();
                 
                 if self.en_distance
                     self.stat_distance = self.calc_stat_distance();

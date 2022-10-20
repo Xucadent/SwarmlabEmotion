@@ -1,12 +1,11 @@
 classdef Emotion
 
-    properties (Constant = true)
-        emotion_L = 0.1;
-        emotion_H = 0.2;
-        time_steps = 200;
-        transfer_prop = 0.2;  % 情感传递影响因子
-        self_prop = 0.5;
-        fear_dist = 30;      % 恐惧情感激发距离
+    properties
+        emotion_L
+        emotion_H
+        time_steps
+        transfer_prop
+        fear_dist
     end
 
     properties
@@ -16,10 +15,16 @@ classdef Emotion
     end
 
     methods
-        function emotion = Emotion()
+        function emotion = Emotion(p_emotion)
             emotion.status = EmotionEnum.Neutral;
             emotion.frust = 0;
             emotion.fear = 0;
+            
+            emotion.emotion_L = p_emotion.emotion_L;
+            emotion.emotion_H = p_emotion.emotion_H;
+            emotion.time_steps = p_emotion.time_steps;
+            emotion.transfer_prop = p_emotion.transfer_prop;
+            emotion.fear_dist = p_emotion.fear_dist;
         end
 
         function emotion = calc_frust(self, vel_history)
@@ -59,7 +64,6 @@ classdef Emotion
                 end
             else
                 emotion.fear = (1 - self.transfer_prop) * (1 - dist_obs / self.fear_dist).^2;
-                %emotion.fear = self.self_prop * (1 - dist_obs / self.fear_dist).^2;
             end
 
             if emotion.fear > 1

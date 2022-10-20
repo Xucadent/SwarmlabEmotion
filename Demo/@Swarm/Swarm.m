@@ -33,9 +33,9 @@ classdef Swarm < handle
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        function add_drone(self, p_sim, map)
+        function add_drone(self, p_sim, p_emo, map)
             self.nb_agents = self.nb_agents + 1;
-            drone = Drone(p_sim, map);
+            drone = Drone(p_sim, p_emo, map);
             self.drones = [self.drones; drone];
         end
 
@@ -105,7 +105,6 @@ classdef Swarm < handle
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function Emotion_swarm = get_emotion(self)
-            Emotion_swarm(1, self.nb_agents) = Emotion();
             for i = 1:self.nb_agents
                 drone = self.drones(i);
                 Emotion_swarm(i) = drone.emotion;

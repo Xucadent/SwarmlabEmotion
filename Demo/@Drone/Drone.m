@@ -74,7 +74,7 @@ classdef Drone < handle
 
     methods
 
-        function Drone = Drone(p_sim, map)
+        function Drone = Drone(p_sim, p_emo, map)
 
             % Create a drone: assign parameters and initialize state to 0
             Drone.p_sim = p_sim;
@@ -87,7 +87,7 @@ classdef Drone < handle
             Drone.nb_neig = 0;
             Drone.command = zeros(4, 1);
             Drone.full_command = zeros(19, 1);
-            Drone.emotion = Emotion();
+            Drone.emotion = Emotion(p_emo);
         
             % cmap = jet(16);
             Drone.color = [0, 0, 0]';

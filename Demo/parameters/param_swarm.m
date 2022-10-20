@@ -7,6 +7,17 @@ p_swarm.is_active_arena = false;
 p_swarm.is_active_spheres = false;
 p_swarm.is_active_cyl = true;
 p_swarm.x_goal = [150, 50]';
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Emotion
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if ~isfield(p_swarm, 'en_emotion')
+    p_swarm.en_emotion = true;
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Number of agents
 %
@@ -37,7 +48,9 @@ end
 % spheres intersect.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-p_swarm.r_coll = 1;
+if ~isfield(p_swarm, 'r_coll')
+    p_swarm.r_coll = 1;
+end
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Arena parameters - Cubic arena
@@ -63,13 +76,13 @@ p_swarm.c_arena = 10;
 
 if (exist('map','var') && ACTIVE_ENVIRONMENT)
 
-    nb_obstacles = length(map.buildings_east);
+    p_swarm.n_cyl = length(map.buildings_east);
     cylinder_radius = map.building_width / 2;
 
     p_swarm.cylinders = [
         map.buildings_north'; % x_obstacle
         map.buildings_east'; % y_obstacle
-        repmat(cylinder_radius, 1, nb_obstacles)]; % r_obstacle
+        repmat(cylinder_radius, 1, p_swarm.n_cyl)]; % r_obstacle
     p_swarm.n_cyl = length(p_swarm.cylinders(1, :));
 else
     p_swarm.cylinders = 0;
@@ -99,9 +112,13 @@ end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-p_swarm.max_a = 10;
+if ~isfield(p_swarm, 'max_a')
+    p_swarm.max_a = 10;
+end
 % p_swarm.max_a = []; % leave empty if you use a real drone model
-p_swarm.max_v = 10;
+if ~isfield(p_swarm, 'max_v')
+    p_swarm.max_v = 10;
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial position and velocity for the swarm
@@ -109,8 +126,8 @@ p_swarm.max_v = 10;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initial positions are contained in a cubic area
-p_swarm.P0 = [-200,50]'; % [m] position of central of the cube
-%p_swarm.P0 = [-100,50]';
+% p_swarm.P0 = [-200,50]'; % [m] position of central of the cube
+p_swarm.P0 = [-100,50]';
 p_swarm.P = 70; % [m] cube edge size
 p_swarm.P0 = p_swarm.P0 + [p_swarm.P/2, -p_swarm.P/2]';
 

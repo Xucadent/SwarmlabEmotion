@@ -68,7 +68,9 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
         neig_list = neig_list(dist ~= 0);
 
         % Count collisions
+        % 未经去重的碰撞次数
         % nb_agent_collisions = nb_agent_collisions + sum(dist < 2 * r_agent) - 1;
+        % 去重后的碰撞次数
         for i = 1:nb_agents
             if dist(i) < 2 * r_agent 
                 if agent_coll(agent, i) == 0 && agent_coll(i, agent) == 0 && i ~= agent
@@ -81,7 +83,8 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
                 agent_coll(i, agent) = 0;
             end
         end
-
+        
+        % 邻居数: 欧式距离+拓扑距离
         % Initialize number of neighbours
         nb_neig = nb_agents - 1;
 
@@ -120,7 +123,7 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
                 
                 % Repulsion and attraction
 
-                % Fear Emotion
+                % Fear Emotion(标准恐惧情感)
                 % if dist(agent2) < rrep(agent)  % repulsion
                 %     vel_rep(:, agent) = vel_rep(:, agent) + ...
                 %         p_swarm.p_rep * (rrep(agent) - dist(agent2)) * p_rel_u(:, agent2);
@@ -181,7 +184,7 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
             end
         end
 
-        % Compute spheric effect (vel_obs 1)
+        % Compute spheric effect (vel_obs 1) 球对称斥力,未启用
         min_dist_obs = 1e5;
         if (p_swarm.is_active_spheres == true)
 
@@ -211,12 +214,13 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
                 if vel_ab > v_obs_max
                     vel_obs(:, agent) = vel_obs(:, agent) + (vel_ab - v_obs_max) * (v_obs_virtual - vel(:, agent)) ./ vel_ab;
                 end
+                
                 %vel_obs(:, agent) = vel_obs(:, agent) * (p_swarm.g_shill_base + self.drones(agent).emotion.frust * p_swarm.g_shill_range);
                 vel_obs(:, agent) = vel_obs(:, agent) * 1;
             end
         end
 
-        % Compute cylindric effect (vel_obs 2)
+        % Compute cylindric effect (vel_obs 2) 柱对称斥力,启用
         if (p_swarm.is_active_cyl == true)
 
             for obs = 1:p_swarm.n_cyl
@@ -249,15 +253,19 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
                     min_dist_obs = dist_ab;
                 end
                 
-                % r0_shill = p_swarm.r0_shill_base + self.drones(agent).emotion.fear * p_swarm.r0_shill_range;
                 r0_shill = p_swarm.r0_shill_base;
                 v_obs_max = get_v_max(0, dist_ab - r0_shill, p_swarm.a_shill, p_swarm.p_shill);
 
                 if vel_ab > v_obs_max
                     vel_obs(1:2, agent) = vel_obs(1:2, agent) + (vel_ab - v_obs_max) * (v_obs_virtual - vel(1:2, agent)) ./ vel_ab;
                 end
-                vel_obs(:, agent) = vel_obs(:, agent) * (p_swarm.g_shill_base + self.drones(agent).emotion.fear * p_swarm.g_shill_range);
-                 %vel_obs(:, agent) = vel_obs(:, agent) * 2;
+
+                if p_swarm.en_emotion
+                    vel_obs(:, agent) = vel_obs(:, agent) * (p_swarm.g_shill_base + self.drones(agent).emotion.fear * p_swarm.g_shill_range);
+                else
+                    vel_obs(:, agent) = vel_obs(:, agent) * (p_swarm.g_shill_base + 0.5 * p_swarm.g_shill_range);
+                end
+
             end
         end
         
@@ -277,16 +285,16 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
             vel_goal(:, agent) = [0; 0];
         end
 
-        %% Calculate emotion intensity and effects
+        %% Calculate emotion intensity and effects 情感
         neigfear_num = 0;
         for neig = 1 : nb_neig
             if self.drones(neig_list(neig)).emotion.status == EmotionEnum.Fear
                 neigfear_num = neigfear_num + 1;
             end
         end
-
+        
+        % 情感强度可视化
         emotion = self.drones(agent).emotion;
-        %emotion = emotion.calc_frust(self.drones(agent).vel_xyz_history);
         emotion = emotion.calc_fear(neigfear_num, nb_neig, min_dist_obs);
         self.drones(agent).emotion = emotion.update_emotion();
         %self.drones(agent).color(3) = 10*emotion.frust;
@@ -294,12 +302,11 @@ function [vel_command, collisions, coll_calibration] = compute_vel_vasarhelyi(se
         self.drones(agent).color(1) = emotion.fear;
         %self.drones(agent).color(1) = 10*emotion.frust;
         
-        prep(agent) = p_swarm.g_shill_base;% + self.drones(agent).emotion.frust * p_swarm.g_shill_range;
-        rrep(agent) = 8 - self.drones(agent).emotion.fear * 3;
+        % 无人机之间斥力调节,废弃
+        % prep(agent) = p_swarm.g_shill_base + self.drones(agent).emotion.frust * p_swarm.g_shill_range;
+        % rrep(agent) = 8 - self.drones(agent).emotion.fear * 3;
         
-
         %% Sum agent-agent and obstacle contributions
-
         vel_command(:, agent) = vel_rep(:, agent) + vel_fric(:, agent) + vel_obs(:, agent) + vel_wall(:, agent) + vel_goal(:, agent);
 
         
