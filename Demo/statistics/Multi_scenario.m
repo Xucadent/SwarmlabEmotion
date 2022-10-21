@@ -1,4 +1,4 @@
-classdef Multi_scenario
+classdef Multi_Scenario
     %连续调参
     
     properties
@@ -26,7 +26,7 @@ classdef Multi_scenario
     end
     
     methods
-        function self = Multi_scenario()
+        function self = Multi_Scenario()
             self.swarm_stat = Swarm_Statistics([], [], []);
         end
         
@@ -46,6 +46,10 @@ classdef Multi_scenario
             run('example_vasarhelyi.m');
             
             stat = self.swarm_stat;
+            stat.agent_pos = [];
+            stat.agent_vel = [];
+            stat.agent_neig = [];
+            stat.agent_emo = [];
             fprintf("scenario: %d collision: %d, %d\n", self.scenario_id,...
             stat.stat_collisions(1), stat.stat_collisions(2));
 

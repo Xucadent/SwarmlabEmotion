@@ -19,6 +19,8 @@ scenario_en = temp;
 config = [scenario_id, scenario_en, config.data];
 
 % 保存Multi_Scenario属性并生成副本
+addpath(genpath('./Demo'));
+Current_Scenario = Multi_Scenario();
 Dest_DirName = '';
 for i = 1 : scenario_num
     for j = 1 : config(i,5)
@@ -50,7 +52,7 @@ end
 Work_DirName = '';
 for i = 1 : scenario_num
     for j = 1 : config(i,5)
-        Work_DirName = ['./Scenario_', num2str(Current_Scenario.scenario_id), '_Copy_', num2str(j)];
+        Work_DirName = ['./Scenario_', num2str(i), '_Copy_', num2str(j)];
         cd(Work_DirName)
         unix('bash swarmlab_server.sh');
         cd ../;
@@ -59,7 +61,7 @@ for i = 1 : scenario_num
     while true
         flag = true;
         for j = 1 : config(i,5)
-            Work_DirName = ['./Scenario_', num2str(Current_Scenario.scenario_id), '_Copy_', num2str(j), '/result.mat'];
+            Work_DirName = ['./Scenario_', num2str(i), '_Copy_', num2str(j), '/result.mat'];
             % 判断是否存在文件Work_DirName
             file = dir(Work_DirName);
             if size(file, 1) < 1
@@ -67,12 +69,27 @@ for i = 1 : scenario_num
             end
         end
         if flag
-            fprintf('Scenario%d is finished!', i);
+            fprintf('Scenario%d is finished!\n', i);
             break;
         else
-            fprintf('Waiting for Scenario%d to end...', i);
+            fprintf('Waiting for Scenario%d to end...\n', i);
             pause(5);
         end
     end
 
 end
+
+% 读取结果并保存
+addpath(genpath('./Demo'));
+Scenario_Result = cell(scenario_num, max(config(:,5)));
+Work_DirName = '';
+for i = 1 : scenario_num
+    for j = 1 : config(i,5)
+        Work_DirName = ['./Scenario_', num2str(i), '_Copy_', num2str(j)];
+        cd(Work_DirName)
+        load('result.mat');
+        Scenario_Result{i,j} = stat;
+        cd ../;
+    end
+end
+save('./Scenario_Result.mat', 'Scenario_Result');

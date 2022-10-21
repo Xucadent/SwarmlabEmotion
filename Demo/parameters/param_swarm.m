@@ -126,8 +126,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initial positions are contained in a cubic area
-% p_swarm.P0 = [-200,50]'; % [m] position of central of the cube
-p_swarm.P0 = [-100,50]';
+p_swarm.P0 = [-200,50]'; % [m] position of central of the cube
+% p_swarm.P0 = [-100,50]';
 p_swarm.P = 70; % [m] cube edge size
 p_swarm.P0 = p_swarm.P0 + [p_swarm.P/2, -p_swarm.P/2]';
 

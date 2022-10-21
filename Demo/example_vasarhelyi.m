@@ -49,7 +49,7 @@ swarm.set_pos(p_swarm.Pos0);
 if exist('self','var')
     velocity = self.v_obs;
 else
-    velocity = 8;
+    velocity = 15;
 end
 
 p_swarm.cylinder_vel = zeros(2, p_swarm.n_cyl); %速度大小，取＋
