@@ -49,7 +49,7 @@ classdef Multi_Scenario
             stat.agent_pos = [];
             stat.agent_vel = [];
             stat.agent_neig = [];
-            stat.agent_emo = [];
+            stat.agent_emo = Emotion([]);
             fprintf("scenario: %d collision: %d, %d\n", self.scenario_id,...
             stat.stat_collisions(1), stat.stat_collisions(2));
 

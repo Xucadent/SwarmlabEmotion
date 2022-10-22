@@ -20,11 +20,13 @@ classdef Emotion
             emotion.frust = 0;
             emotion.fear = 0;
             
-            emotion.emotion_L = p_emotion.emotion_L;
-            emotion.emotion_H = p_emotion.emotion_H;
-            emotion.time_steps = p_emotion.time_steps;
-            emotion.transfer_prop = p_emotion.transfer_prop;
-            emotion.fear_dist = p_emotion.fear_dist;
+            if ~isempty(p_emotion)
+                emotion.emotion_L = p_emotion.emotion_L;
+                emotion.emotion_H = p_emotion.emotion_H;
+                emotion.time_steps = p_emotion.time_steps;
+                emotion.transfer_prop = p_emotion.transfer_prop;
+                emotion.fear_dist = p_emotion.fear_dist;
+            end
         end
 
         function emotion = calc_frust(self, vel_history)
