@@ -146,30 +146,30 @@ classdef Swarm_Statistics
         end
         
         function stat_avrneig = calc_stat_avrneig(self)
-            % 好像现在平均邻居数和集群密度是成正比的, 没必要都算吧
-            stat_avrneig = 0;
-            for i = 1 : self.agent_nb
-                stat_avrneig = stat_avrneig + self.agent_emo(i).frust;
-            end
-            stat_avrneig = stat_avrneig / self.agent_nb;
-            stat_avrneig = [self.stat_avrneig; stat_avrneig];
+            % % 好像现在平均邻居数和集群密度是成正比的, 没必要都算吧
+            % stat_avrneig = 0;
+            % for i = 1 : self.agent_nb
+            %     stat_avrneig = stat_avrneig + self.agent_emo(i).frust;
+            % end
+            % stat_avrneig = stat_avrneig / self.agent_nb;
+            % stat_avrneig = [self.stat_avrneig; stat_avrneig];
         end
         
         function stat_avremotion = calc_stat_avremotion(self)
             stat_avremotion = 0;
             for i = 1 : self.agent_nb
-                stat_avremotion = stat_avremotion + self.agent_emo(i).frust;
+                stat_avremotion = stat_avremotion + self.agent_emo(i).fear;
             end
             stat_avremotion = stat_avremotion / self.agent_nb;
             stat_avremotion = [self.stat_avremotion; stat_avremotion];
         end
         
         function stat_density = calc_stat_density(self)
-            sum_neig = 0;
-            for i = 1 : self.agent_nb
-                sum_neig = sum_neig + self.agent_emo(i).frust;
-            end
-            stat_density = sum_neig / (self.agent_nb * pi * self.agent_r.^2);
+            % sum_neig = 0;
+            % for i = 1 : self.agent_nb
+            %     sum_neig = sum_neig + self.agent_emo(i).frust;
+            % end
+            % stat_density = sum_neig / (self.agent_nb * pi * self.agent_r.^2);
         end
         
         function obj = calc_statistics(self, swarm, collisions, time)
